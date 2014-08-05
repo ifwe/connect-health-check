@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = function(grunt) {
     var TEST_RUNNER = path.join(process.cwd(), 'test', 'test_runner');
-    var ALL_TESTS = 'test/**/*_test.js';
+    var ALL_TESTS = 'test/**/*_test.coffee';
 
     // NPM tasks, alphabetical
     grunt.loadNpmTasks('grunt-contrib-clean');
@@ -20,7 +20,7 @@ module.exports = function(grunt) {
         // Documentation
         docco: {
             main: {
-                src: ['lib/**/*.js'],
+                src: ['lib/**/*.coffee', 'lib/**/*.js'],
                 options: {
                     output: 'docs/'
                 }
@@ -76,8 +76,8 @@ module.exports = function(grunt) {
                     spawn: false
                 },
                 files: [
-                    'lib/**/*.js',
-                    'test/**/*.js'
+                    'lib/**/*.coffee',
+                    'test/**/*.coffee'
                 ],
                 tasks: ['mochaTest:test']
             }

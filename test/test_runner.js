@@ -1,3 +1,4 @@
+require('coffee-script');
 var path = require('path');
 
 // Use constant to help with resolving path to lib code within test files
