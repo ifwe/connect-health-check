@@ -1,26 +1,26 @@
 {
-  "name": "tagged-npm-seed",
-  "version": "0.0.0",
-  "description": "Tagged's seed project for NPM packages",
+  "name": "tagged-health",
+  "version": "0.0.1",
+  "description": "Health check middleware for connect",
   "main": "lib/index.js",
   "scripts": {
     "test": "grunt test"
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/tagged/npm-seed.git"
+    "url": "http://github.com/tagged/connect-health-check.git"
   },
   "keywords": [
-    "api",
     "tagged",
-    "client"
+    "health",
+    "connect"
   ],
   "author": "Web Team Awesome",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/tagged/npm-seed/issues"
+    "url": "https://github.com/tagged/connect-health-check/issues"
   },
-  "homepage": "https://github.com/tagged/npm-seed",
+  "homepage": "https://github.com/tagged/connect-health-check",
   "devDependencies": {
     "blanket": "^1.1.6",
     "chai": "^1.9.1",
@@ -31,5 +31,8 @@
     "grunt-mocha-test": "^0.11.0",
     "mocha": "^1.20.1",
     "sinon": "^1.10.3"
+  },
+  "dependencies": {
+    "coffee-script": "^1.7.1"
   }
 }
