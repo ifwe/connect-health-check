@@ -20,13 +20,14 @@ workersHealth = (workers) ->
 # Middleware for connect that responds with a health check
 # if the request path matches the provided path
 middleware = (path, req, res, next) ->
-    return next() if req.path != path
+    return next() if req.url != path
 
     id = if cluster.isWorker then cluster.worker.id else 'master'
     data = health process, id
     data.workers = workersHealth cluster.workers if cluster.isMaster
 
-    res.send data
+    res.writeHead 200, 'Content-Type': 'application/json'
+    res.end JSON.stringify data
 
 # Returns a middleware function
 # bound with the provided path.

@@ -32,5 +32,19 @@ The health check responds with the following data:
         "rss": 15208448,
         "heapTotal": 7195904,
         "heapUsed": 3183048
-      }
+      },
+      workers: []
     }
+
+Cluster Support:
+----------------
+
+If you're using the cluster module, a master health check can be created on its own port:
+
+    var health = require('tagged-health');
+    health.server({
+        path: '/health.json',   // path to health check (default: /health.json)
+        port: 3000              // port to listen on (default: 3000)
+    }, function() {
+        console.log("Master health check listening on port 3000 at /health.json")
+    });
