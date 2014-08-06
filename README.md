@@ -4,7 +4,7 @@ Health check for Connect.
 Installation:
 -------------
 
-    $ npm install tagged-health-check
+    $ npm install tagged-health
 
 Usage:
 ------
@@ -12,14 +12,14 @@ Usage:
 The health check can be registered as middleware in any Connect app:
 
     var connect = require('connect');
-    var healthCheck = require('tagged-health-check');
+    var health = require('tagged-health');
     var app = connect();
 
     // Default health check on `/health.json`:
-    app.use(healthCheck());
+    app.use(health());
 
     // Custom health check path:
-    app.use(healthCheck('/my/custom/health.json');
+    app.use(health('/my/custom/health.json');
 
 The health check responds with the following data:
 
