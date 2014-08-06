@@ -1,4 +1,5 @@
 healthCheck = require "#{LIB_DIR}/health_check"
+cluster = require 'cluster'
 
 describe 'healthCheck', ->
     describe 'middleware', ->
@@ -72,3 +73,46 @@ describe 'healthCheck', ->
             it 'contains `memory` property set to `process.memoryUsage()`', ->
                 @middleware @req, @res, @next
                 @res.send.lastCall.args[0].should.have.property 'memory', 'memory_canary'
+        describe 'cluster master', ->
+            beforeEach ->
+                @middleware = healthCheck() # use default options
+                @req.path = '/health.json' # ensure health object is returned
+                sinon.stub(process, 'uptime').returns('uptime_canary')
+                sinon.stub(process, 'memoryUsage').returns('memory_canary');
+                # cluster.isMaster = true
+                cluster.workers =
+                    abc:
+                        process:
+                            id: 'abc'
+                            arch: 'abc_arch_canary'
+                            pid: 'abc_pid_canary'
+                    def:
+                        process:
+                            id: 'def'
+                            arch: 'def_arch_canary'
+                            pid: 'def_pid_canary'
+
+            afterEach ->
+                cluster.workers = null
+                process.uptime.restore()
+                process.memoryUsage.restore()
+
+            it 'contains health for each worker', ->
+                @middleware @req, @res, @next
+                @res.send.lastCall.args[0].should.have.property 'workers'
+                @res.send.lastCall.args[0].workers.should.be.an 'array'
+                @res.send.lastCall.args[0].workers.should.have.lengthOf 2
+                @res.send.lastCall.args[0].workers[0].should.contain
+                    status: 'OK'
+                    id: 'abc'
+                    arch: 'abc_arch_canary'
+                    pid: 'abc_pid_canary'
+                    uptime: null # uptime is not available in child processes :(
+                    memory: null # memory usage is not available in child processes :(
+                @res.send.lastCall.args[0].workers[1].should.contain
+                    status: 'OK'
+                    id: 'def'
+                    arch: 'def_arch_canary'
+                    pid: 'def_pid_canary'
+                    uptime: null # uptime is not available in child processes :(
+                    memory: null # memory usage is not available in child processes :(

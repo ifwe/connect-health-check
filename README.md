@@ -16,10 +16,10 @@ The health check can be registered as middleware in any Connect app:
     var app = connect();
 
     // Default health check on `/health.json`:
-    app.use(health());
+    app.use(health.middleware());
 
     // Custom health check path:
-    app.use(health('/my/custom/health.json');
+    app.use(health.middleware('/my/custom/health.json');
 
 The health check responds with the following data:
 
