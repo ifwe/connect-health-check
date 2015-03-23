@@ -12,6 +12,7 @@ health = (process) ->
     pid: process.pid
     uptime: if process.uptime? then process.uptime() else null
     memory: if process.memoryUsage? then process.memoryUsage() else null
+    env: process.env
 
 # Keeps track of event IDs
 eventId = 0
