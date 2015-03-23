@@ -1,6 +1,6 @@
 {
   "name": "tagged-health",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Health check middleware for connect",
   "main": "lib/index.js",
   "scripts": {
