@@ -10,6 +10,9 @@ describe 'healthCheck', ->
                 end: sinon.spy()
             @next = sinon.spy()
 
+        # Kill all listeners on cluster
+        afterEach -> cluster.removeAllListeners()
+
         it 'is a function', ->
             healthCheck.should.be.a 'function'
 
@@ -59,7 +62,7 @@ describe 'healthCheck', ->
                 @middleware = healthCheck() # use default options
                 @req.url = '/health.json' # ensure health object is returned
                 sinon.stub(process, 'uptime').returns('uptime_canary')
-                sinon.stub(process, 'memoryUsage').returns('memory_canary');
+                sinon.stub(process, 'memoryUsage').returns('memory_canary')
 
             afterEach ->
                 process.uptime.restore()
@@ -97,6 +100,14 @@ describe 'healthCheck', ->
                 @res.end = (body) ->
                     body = JSON.parse body
                     body.should.have.property 'memory', 'memory_canary'
+                    done()
+                @middleware @req, @res, @next
+
+            it 'contains `env` property set to `process.env`', (done) ->
+                @res.end = (body) ->
+                    body = JSON.parse body
+                    body.should.have.property 'env'
+                    body.env.should.deep.equal process.env
                     done()
                 @middleware @req, @res, @next
 
