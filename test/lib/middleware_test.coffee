@@ -1,3 +1,4 @@
+Promise = require 'bluebird'
 healthCheck = require "#{LIB_DIR}/middleware"
 cluster = require 'cluster'
 
@@ -11,7 +12,10 @@ describe 'healthCheck', ->
             @next = sinon.spy()
 
         # Kill all listeners on cluster
-        afterEach -> cluster.removeAllListeners()
+        afterEach ->
+            cluster.isMaster = false
+            cluster.workers = {}
+            cluster.removeAllListeners()
 
         it 'is a function', ->
             healthCheck.should.be.a 'function'
@@ -34,6 +38,22 @@ describe 'healthCheck', ->
                     @res.writeHead.lastCall.args[0].should.equal 200
                     @res.writeHead.lastCall.args[1].should.deep.equal 'Content-Type': 'application/json'
                     @res.end.calledOnce.should.be.true
+                    done()
+                @middleware @req, @res, @next
+
+            it 'returns 503 response if any hosts are down', (done) ->
+                cluster.isMaster = true
+                cluster.workers = {
+                    # Using a string in place of a function throws an error, causing the promise
+                    # to be rejected. This is a dirty hack but works around the issue of not being
+                    # able to mock responses from workers.
+                    0: { send: 'fail' }
+                }
+                @req.url = '/health.json'
+                @res.writeHead = sinon.spy()
+                @res.end = sinon.spy =>
+                    @res.writeHead.calledOnce.should.be.true
+                    @res.writeHead.calledWith(503, sinon.match.any).should.be.true
                     done()
                 @middleware @req, @res, @next
 
@@ -160,3 +180,4 @@ describe 'healthCheck', ->
                         memory: null # memory usage is not available in child processes :(
                     done()
                 @middleware @req, @res, @next
+

@@ -37,6 +37,7 @@ resolver = (worker, resolve, reject) ->
 # Writes a health check response
 respondWithHealth = (req, res, results) ->
     data = health process
+    responseCode = 200
 
     if cluster.isMaster
         data.workers = []
@@ -44,10 +45,11 @@ respondWithHealth = (req, res, results) ->
         for result in results
             if result.isRejected()
                 data.workers.push status: 'DOWN'
+                responseCode = 503
             else
                 data.workers.push result.value().health
 
-    res.writeHead 200, 'Content-Type': 'application/json'
+    res.writeHead responseCode, 'Content-Type': 'application/json'
     res.end JSON.stringify data
 
 # Middleware for connect that responds with a health check
