@@ -1,6 +1,7 @@
 Promise = require 'bluebird'
 healthCheck = require "#{LIB_DIR}/middleware"
 cluster = require 'cluster'
+os = require 'os'
 
 describe 'healthCheck', ->
     describe 'middleware', ->
@@ -10,12 +11,14 @@ describe 'healthCheck', ->
                 writeHead: sinon.spy()
                 end: sinon.spy()
             @next = sinon.spy()
+            sinon.stub(os, 'hostname').returns 'test os'
 
         # Kill all listeners on cluster
         afterEach ->
             cluster.isMaster = false
             cluster.workers = {}
             cluster.removeAllListeners()
+            os.hostname.restore()
 
         it 'is a function', ->
             healthCheck.should.be.a 'function'
@@ -128,6 +131,14 @@ describe 'healthCheck', ->
                     body = JSON.parse body
                     body.should.have.property 'env'
                     body.env.should.deep.equal process.env
+                    done()
+                @middleware @req, @res, @next
+
+            it 'contains `hostname` property set to `os.hostname()`', (done) ->
+                @res.end = (body) ->
+                    body = JSON.parse body
+                    body.should.have.property 'hostname'
+                    body.hostname.should.equal 'test os'
                     done()
                 @middleware @req, @res, @next
 
