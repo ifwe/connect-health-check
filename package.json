@@ -1,6 +1,6 @@
 {
   "name": "tagged-health",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Health check middleware for connect",
   "main": "lib/index.js",
   "scripts": {
@@ -33,9 +33,10 @@
     "sinon": "1.10.3"
   },
   "dependencies": {
+    "async": "0.9.0",
+    "bluebird": "2.2.2",
     "coffee-script": "1.10.0",
     "connect": "3.1.0",
-    "async": "0.9.0",
-    "bluebird": "2.2.2"
+    "grunt-bump": "0.7.0"
   }
 }
