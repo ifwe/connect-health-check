@@ -1,6 +1,7 @@
 Promise = require 'bluebird'
 cluster = require 'cluster'
 childProcess = require 'child_process'
+os = require 'os'
 
 EVENT_NAME = 'tagged.health'
 
@@ -13,6 +14,7 @@ health = (process) ->
     uptime: if process.uptime? then process.uptime() else null
     memory: if process.memoryUsage? then process.memoryUsage() else null
     env: process.env
+    hostname: os.hostname()
 
 # Keeps track of event IDs
 eventId = 0
