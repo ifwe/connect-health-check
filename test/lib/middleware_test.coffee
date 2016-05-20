@@ -142,6 +142,14 @@ describe 'healthCheck', ->
                     done()
                 @middleware @req, @res, @next
 
+            it 'contains `version` property set to `node.version`', (done) ->
+                @res.end = (body) ->
+                    body = JSON.parse body
+                    body.should.have.property 'version'
+                    body.version.should.deep.equal process.version
+                    done()
+                @middleware @req, @res, @next
+
         # TODO: Find a way to mock events sent from workers to master process
         # or a way to trigger master process events on demand.
         # Maybe use event emitter?

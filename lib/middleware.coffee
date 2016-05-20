@@ -15,6 +15,7 @@ health = (process) ->
     memory: if process.memoryUsage? then process.memoryUsage() else null
     env: process.env
     hostname: os.hostname()
+    version: process.version
 
 # Keeps track of event IDs
 eventId = 0
