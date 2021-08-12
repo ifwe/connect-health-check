@@ -43,6 +43,7 @@ describe 'healthCheck', ->
                     @res.end.calledOnce.should.be.true
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'returns 503 response if any hosts are down', (done) ->
                 cluster.isMaster = true
@@ -59,6 +60,7 @@ describe 'healthCheck', ->
                     @res.writeHead.calledWith(503, sinon.match.any).should.be.true
                     done()
                 @middleware @req, @res, @next
+                return
 
         describe 'configurable route', ->
             beforeEach ->
@@ -72,6 +74,7 @@ describe 'healthCheck', ->
                     done()
                 @req.url = '/test/health.json'
                 @middleware @req, @res, @next
+                return
 
             it 'calls next() if `req.url` does not match default `/health.json`', (done) ->
                 @next = sinon.spy ->
@@ -79,6 +82,7 @@ describe 'healthCheck', ->
                 @req.url = '/health.json' # should not match, because the default was overwritten
                 @middleware @req, @res, @next
                 @next.called.should.be.true
+                return
 
         describe 'health object', ->
             beforeEach ->
@@ -97,6 +101,7 @@ describe 'healthCheck', ->
                     body.should.have.property 'status', 'OK'
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'contains `arch` property set to `process.arch`', (done) ->
                 @res.end = (body) ->
@@ -104,6 +109,7 @@ describe 'healthCheck', ->
                     body.should.have.property 'arch', process.arch
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'contains `pid` property set to `process.pid`', (done) ->
                 @res.end = (body) ->
@@ -111,6 +117,7 @@ describe 'healthCheck', ->
                     body.should.have.property 'pid', process.pid
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'contains `uptime` property set to `process.uptime()`', (done) ->
                 @res.end = (body) ->
@@ -118,6 +125,7 @@ describe 'healthCheck', ->
                     body.should.have.property 'uptime', 'uptime_canary'
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'contains `memory` property set to `process.memoryUsage()`', (done) ->
                 @res.end = (body) ->
@@ -125,6 +133,7 @@ describe 'healthCheck', ->
                     body.should.have.property 'memory', 'memory_canary'
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'contains `env` property set to `process.env`', (done) ->
                 @res.end = (body) ->
@@ -133,6 +142,7 @@ describe 'healthCheck', ->
                     body.env.should.deep.equal process.env
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'contains `hostname` property set to `os.hostname()`', (done) ->
                 @res.end = (body) ->
@@ -141,6 +151,7 @@ describe 'healthCheck', ->
                     body.hostname.should.equal 'test os'
                     done()
                 @middleware @req, @res, @next
+                return
 
             it 'contains `version` property set to `node.version`', (done) ->
                 @res.end = (body) ->
@@ -149,6 +160,7 @@ describe 'healthCheck', ->
                     body.version.should.deep.equal process.version
                     done()
                 @middleware @req, @res, @next
+                return
 
         # TODO: Find a way to mock events sent from workers to master process
         # or a way to trigger master process events on demand.
@@ -199,4 +211,5 @@ describe 'healthCheck', ->
                         memory: null # memory usage is not available in child processes :(
                     done()
                 @middleware @req, @res, @next
+                return
 
