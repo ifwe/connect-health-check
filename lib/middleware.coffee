@@ -46,6 +46,7 @@ respondWithHealth = (req, res, results) ->
         data.workers = []
 
         for result in results
+            # isRejected is bluebird 3 functionality 
             if result.isRejected()
                 data.workers.push status: 'DOWN'
                 responseCode = 503
@@ -66,7 +67,7 @@ middleware = (path, req, res, next) ->
         for id, worker of cluster.workers
             promises.push new Promise resolver.bind(null, worker)
 
-    Promise.settle(promises)
+    Promise.allSettled(promises)
     .then(respondWithHealth.bind(null, req, res))
 
 # Register a worker listener each time a worker is forked
